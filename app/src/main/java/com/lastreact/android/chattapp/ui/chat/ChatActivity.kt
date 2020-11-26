@@ -17,6 +17,7 @@ import com.lastreact.android.chattapp.extensions.hideKeyboard
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
 import org.jetbrains.anko.design.longSnackbar
+import org.jetbrains.anko.design.snackbar
 import java.util.*
 
 class ChatActivity : BaseActivity<ActivityChatBinding>(), AnkoLogger {
@@ -97,6 +98,10 @@ class ChatActivity : BaseActivity<ActivityChatBinding>(), AnkoLogger {
     }
 
     fun sendClicked(view: View) {
+        if (binding.messageEditText.text.isNullOrBlank()){
+            binding.root.longSnackbar("Text cannot be null")
+            return
+        }
         addMessage(binding.messageEditText.text.toString())
             .addOnSuccessListener(this) {
                 reset()
