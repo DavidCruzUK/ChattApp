@@ -1,18 +1,23 @@
 package com.lastreact.android.chattapp.ui.channels
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.lastreact.android.chattapp.base.BaseDialogFragment
+import com.lastreact.android.chattapp.data.model.Channel
 import com.lastreact.android.chattapp.databinding.DialogChannelBinding
+import java.lang.ref.WeakReference
 
 class ChannelDialogFragment : BaseDialogFragment<DialogChannelBinding>(), View.OnClickListener {
 
     companion object {
         const val TAG = "ChannelDialogFragment"
     }
+
+    private lateinit var listener: WeakReference<ChannelsActivity>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,13 +41,28 @@ class ChannelDialogFragment : BaseDialogFragment<DialogChannelBinding>(), View.O
         ) ?: Log.e(TAG, "$TAG::onResume dialog or window is null")
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is ChannelsActivity) {
+            listener = WeakReference(context)
+        }
+    }
+
     override fun createViewBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ): DialogChannelBinding = DialogChannelBinding.inflate(inflater, container, false)
 
     private fun onCreateClicked() {
-        // TODO: implementation create channel
+        val channel = Channel(
+            null,
+            binding.channelNameEditText.text.toString(),
+            binding.channelDescriptionEditText.text.toString(),
+        )
+        binding.channelNameEditText.text.clear()
+        binding.channelDescriptionEditText.text.clear()
+        listener.get()?.onChannel(channel)
+        dismiss()
     }
 
     private fun onCancelClicked() {

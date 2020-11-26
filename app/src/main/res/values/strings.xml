@@ -34,4 +34,5 @@
     <string name="cancel">Cancel</string>
     <string name="create">Create</string>
     <string name="recovery_email_message">Recovery email sent</string>
+    <string name="channel_created_text">Channel Created</string>
 </resources>

@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -70,6 +71,38 @@ class ChannelsActivity : BaseActivity<ActivityChannelsBinding>(), AnkoLogger {
         channelsDialog.show(supportFragmentManager, ChannelDialogFragment.TAG)
     }
 
+    fun channelListener(channel: Channel?) {
+        channel?.let {
+            startActivity(
+                intentFor<ChatActivity>(
+                    ChatActivity.KEY_CHANNEL_ID to it.id,
+                    ChatActivity.KEY_CHANNEL_NAME to it.name
+                )
+            )
+        }
+    }
+
+    fun onChannel(channel: Channel) {
+        if (!channel.name.isNullOrBlank() && !channel.description.isNullOrBlank()) {
+            addChannel(channel)
+                .addOnSuccessListener {
+                    longToast(getString(R.string.channel_created_text))
+                }
+                .addOnFailureListener {
+                    binding.root.longSnackbar(getString(R.string.network_error))
+                }
+        } else {
+            binding.root.longSnackbar(getString(R.string.name_description_not_emty))
+        }
+    }
+
+    private fun addChannel(channel: Channel): Task<Void> {
+        return fireStore.runTransaction { transition ->
+            transition[channelReference] = channel
+            null
+        }
+    }
+
     private fun initRecyclerView() {
         adapter = object : ChannelAdapter(query, this@ChannelsActivity::channelListener) {
             override fun onError(e: FirebaseFirestoreException?) {
@@ -89,17 +122,6 @@ class ChannelsActivity : BaseActivity<ActivityChannelsBinding>(), AnkoLogger {
                     LinearLayoutManager(this@ChannelsActivity)
                 binding.channelsRecyclerView.adapter = adapter
             }
-        }
-    }
-
-    private fun channelListener(channel: Channel?) {
-        channel?.let {
-            startActivity(
-                intentFor<ChatActivity>(
-                    ChatActivity.KEY_CHANNEL_ID to it.id,
-                    ChatActivity.KEY_CHANNEL_NAME to it.name
-                )
-            )
         }
     }
 
