@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Color Chat</string>
+    <string name="app_name">ChattApp</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_user_name">Username</string>
