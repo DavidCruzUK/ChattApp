@@ -39,11 +39,7 @@ class ChannelsActivity : BaseActivity<ActivityChannelsBinding>(), AnkoLogger {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.logout -> {
-                auth.signOut()
-                startActivity(intentFor<LoginActivity>().clearTask().newTask())
-                finish()
-            }
+            R.id.logout -> logout()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -66,6 +62,9 @@ class ChannelsActivity : BaseActivity<ActivityChannelsBinding>(), AnkoLogger {
     override fun createViewBinding(): ActivityChannelsBinding =
         ActivityChannelsBinding.inflate(layoutInflater)
 
+    override fun onBackPressed() {
+        logout()
+    }
 
     fun showChannelDialog(view: View) {
         channelsDialog.show(supportFragmentManager, ChannelDialogFragment.TAG)
@@ -94,6 +93,12 @@ class ChannelsActivity : BaseActivity<ActivityChannelsBinding>(), AnkoLogger {
         } else {
             binding.root.longSnackbar(getString(R.string.name_description_not_emty))
         }
+    }
+
+    private fun logout() {
+        auth.signOut()
+        startActivity(intentFor<LoginActivity>().clearTask().newTask())
+        finish()
     }
 
     private fun addChannel(channel: Channel): Task<Void> {
