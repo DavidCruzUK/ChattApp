@@ -36,16 +36,34 @@
 package com.lastreact.android.chattapp.ui.login
 
 import android.os.Bundle
+import android.view.View
+import com.google.firebase.auth.FirebaseAuth
+import com.lastreact.android.chattapp.R
 import com.lastreact.android.chattapp.base.BaseActivity
 import com.lastreact.android.chattapp.databinding.ActivityLoginBinding
+import com.lastreact.android.chattapp.extensions.afterTextChanged
+import com.lastreact.android.chattapp.extensions.hideKeyboard
 import com.lastreact.android.chattapp.ui.channels.ChannelsActivity
+import com.lastreact.android.chattapp.ui.signup.SignUpActivity
+import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.longToast
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpLogin()
+        auth = FirebaseAuth.getInstance()
+        if (auth.currentUser != null) {
+            startActivity(intentFor<ChannelsActivity>())
+        } else {
+            setUpLogin()
+            setupTextFields()
+            binding.signUpButton.setOnClickListener { startSignUpActivity() }
+            binding.forgotPasswordTextView.setOnClickListener { forgotPassword() }
+        }
     }
 
     override fun createViewBinding(): ActivityLoginBinding =
@@ -53,7 +71,78 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
     private fun setUpLogin() {
         binding.loginButton.setOnClickListener {
-            startActivity(intentFor<ChannelsActivity>())
+            hideKeyboard()
+            when {
+                !isEmailValid(binding.emailEditText.text.toString()) -> {
+                    binding.emailTextInputLayout.error = getString(R.string.email_not_valid)
+                }
+                !isPasswordValid(binding.passwordEditText.text.toString()) -> {
+                    binding.passwordTextInputLayout.error = getString(R.string.invalid_password)
+                }
+                else -> {
+                    showLoading(true)
+                    auth.signInWithEmailAndPassword(
+                        binding.emailEditText.text.toString(),
+                        binding.passwordEditText.text.toString(),
+                    ).addOnCompleteListener { task ->
+                        if (task.isComplete && task.isSuccessful) {
+                            startActivity(intentFor<ChannelsActivity>())
+                            longToast("Welcome ${auth.currentUser?.displayName}")
+                        } else {
+                            showLoading(false)
+                            binding.container.longSnackbar(task.exception?.localizedMessage.toString())
+                        }
+                    }
+                }
+            }
+
         }
+    }
+
+    private fun startSignUpActivity() {
+        startActivity(intentFor<SignUpActivity>())
+    }
+
+    private fun forgotPassword() {
+        if (!isEmailValid(binding.emailEditText.text.toString())) {
+            binding.emailTextInputLayout.error = getString(R.string.email_not_valid)
+        } else {
+            showLoading(true)
+            auth.sendPasswordResetEmail(binding.emailEditText.text.toString())
+                .addOnCompleteListener { task ->
+                    if (task.isComplete && task.isSuccessful) {
+                        showLoading(false)
+                        longToast(getString(R.string.recovery_email_message))
+                    } else {
+                        showLoading(false)
+                        binding.container.longSnackbar(task.exception?.localizedMessage.toString())
+                    }
+                }
+        }
+    }
+
+    private fun setupTextFields() {
+        binding.emailEditText.afterTextChanged {
+            if (it.isNotEmpty()) {
+                binding.emailTextInputLayout.error = null
+            }
+        }
+        binding.passwordEditText.afterTextChanged {
+            if (it.isNotEmpty()) {
+                binding.emailTextInputLayout.error = null
+            }
+        }
+    }
+
+    private fun showLoading(show: Boolean) {
+        binding.loading.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
+    private fun isEmailValid(email: String): Boolean {
+        return email.isNotBlank() && email.contains("@")
+    }
+
+    private fun isPasswordValid(password: String): Boolean {
+        return password.length > 7
     }
 }
