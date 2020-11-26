@@ -35,12 +35,25 @@
 
 package com.lastreact.android.chattapp.ui.login
 
+import android.os.Bundle
 import com.lastreact.android.chattapp.base.BaseActivity
 import com.lastreact.android.chattapp.databinding.ActivityLoginBinding
+import com.lastreact.android.chattapp.ui.channels.ChannelsActivity
+import org.jetbrains.anko.intentFor
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setUpLogin()
+    }
 
     override fun createViewBinding(): ActivityLoginBinding =
         ActivityLoginBinding.inflate(layoutInflater)
 
+    private fun setUpLogin() {
+        binding.loginButton.setOnClickListener {
+            startActivity(intentFor<ChannelsActivity>())
+        }
+    }
 }

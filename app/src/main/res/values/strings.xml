@@ -28,4 +28,9 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="repeat_password">Repeat Password</string>
+    <string name="add_channel">Add channel</string>
+    <string name="channel_name_here">Channel name here</string>
+    <string name="channel_description_here">Channel description here</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
 </resources>
