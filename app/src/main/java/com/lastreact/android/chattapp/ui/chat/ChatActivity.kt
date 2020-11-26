@@ -3,6 +3,7 @@ package com.lastreact.android.chattapp.ui.chat
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -10,10 +11,13 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
 import com.lastreact.android.chattapp.R
 import com.lastreact.android.chattapp.base.BaseActivity
+import com.lastreact.android.chattapp.data.model.Message
 import com.lastreact.android.chattapp.databinding.ActivityChatBinding
+import com.lastreact.android.chattapp.extensions.hideKeyboard
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
 import org.jetbrains.anko.design.longSnackbar
+import java.util.*
 
 class ChatActivity : BaseActivity<ActivityChatBinding>(), AnkoLogger {
 
@@ -80,8 +84,35 @@ class ChatActivity : BaseActivity<ActivityChatBinding>(), AnkoLogger {
     override fun createViewBinding(): ActivityChatBinding =
         ActivityChatBinding.inflate(layoutInflater)
 
-    fun sendClicked(view: View) {
+    private fun addMessage(text: String): Task<Void> {
+        val chatReference = channelReference
+            .collection(MESSAGE_COLLECTION)
+            .document()
+        val currentUser = auth.currentUser
+        val message = Message(currentUser?.uid ?: "", text, currentUser?.displayName ?: "", null)
+        return fireStore.runTransaction { transition ->
+            transition[chatReference] = message
+            null
+        }
+    }
 
+    fun sendClicked(view: View) {
+        addMessage(binding.messageEditText.text.toString())
+            .addOnSuccessListener(this) {
+                reset()
+            }
+            .addOnFailureListener(this) {
+                binding.root.longSnackbar(getString(R.string.network_error))
+                debug("FireStoreException: ${it.message}")
+            }
+    }
+
+    private fun reset() {
+        binding.messageEditText.text.clear()
+        hideKeyboard()
+        binding.chatRecyclerView.adapter?.let {
+            binding.chatRecyclerView.smoothScrollToPosition(it.itemCount - 1)
+        }
     }
 
     companion object {
