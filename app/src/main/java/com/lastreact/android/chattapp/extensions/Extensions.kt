@@ -1,4 +1,4 @@
-package com.lastreact.android.chattapp.ui.extensions
+package com.lastreact.android.chattapp.extensions
 
 import android.text.Editable
 import android.text.TextWatcher
