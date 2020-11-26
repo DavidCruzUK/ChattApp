@@ -41,7 +41,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="@id/emailTextInputLayout"
         app:layout_constraintStart_toStartOf="@id/emailTextInputLayout"
-        app:layout_constraintTop_toBottomOf="@+id/emailTextInputLayout">
+        app:layout_constraintTop_toBottomOf="@id/emailTextInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/userNameEditText"
@@ -72,7 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/prompt_password"
-            android:inputType="textEmailAddress"
+            android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -96,7 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/prompt_confirm_password"
-            android:inputType="textEmailAddress"
+            android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

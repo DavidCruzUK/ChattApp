@@ -15,7 +15,7 @@
     <string name="forgot_password">Forgot Password?</string>
     <string name="main_icon">Main Icon</string>
     <string name="not_blank">%1$s must not be blank</string>
-    <string name="password_not_match">Passwords dont match</string>
+    <string name="password_not_match">Passwords are not valid or don\'t match</string>
     <string name="date_format">MMMM dd, HH:mm</string>
     <string name="email_not_valid">Email not valid</string>
     <string name="network_error">Network error, try again later</string>
