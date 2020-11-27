@@ -13,11 +13,9 @@ import com.lastreact.android.chattapp.R
 import com.lastreact.android.chattapp.base.BaseActivity
 import com.lastreact.android.chattapp.data.model.Message
 import com.lastreact.android.chattapp.databinding.ActivityChatBinding
-import com.lastreact.android.chattapp.extensions.hideKeyboard
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
 import org.jetbrains.anko.design.longSnackbar
-import org.jetbrains.anko.design.snackbar
 import java.util.*
 
 class ChatActivity : BaseActivity<ActivityChatBinding>(), AnkoLogger {
@@ -98,31 +96,37 @@ class ChatActivity : BaseActivity<ActivityChatBinding>(), AnkoLogger {
     }
 
     fun sendClicked(view: View) {
-        if (binding.messageEditText.text.isNullOrBlank()){
+        if (binding.messageEditText.text.isNullOrBlank()) {
             binding.root.longSnackbar("Text cannot be null")
             return
         }
+        onSendMessageButtonState(false)
         addMessage(binding.messageEditText.text.toString())
             .addOnSuccessListener(this) {
                 reset()
+                onSendMessageButtonState(true)
             }
             .addOnFailureListener(this) {
                 binding.root.longSnackbar(getString(R.string.network_error))
                 debug("FireStoreException: ${it.message}")
+                onSendMessageButtonState(true)
             }
+    }
+
+    private fun onSendMessageButtonState(isAvailable: Boolean) {
+        binding.sendButton.isEnabled = isAvailable
+        binding.sendButton.isClickable = isAvailable
     }
 
     private fun reset() {
         binding.messageEditText.text.clear()
-        hideKeyboard()
         binding.chatRecyclerView.adapter?.let {
             binding.chatRecyclerView.smoothScrollToPosition(it.itemCount - 1)
         }
     }
 
     companion object {
-        private const val LIMIT = 50
-        const val KEY_CHANNEL_ID = "key_restaurant_id"
+        const val KEY_CHANNEL_ID = "key_channel_id"
         const val KEY_CHANNEL_NAME = "key_channel_name"
         const val MESSAGE_COLLECTION = "messages"
         const val CHANNEL_COLLECTION = "channels"

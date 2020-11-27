@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.Query
 import com.lastreact.android.chattapp.R
+import com.lastreact.android.chattapp.base.FireStoreAdapter
 import com.lastreact.android.chattapp.data.model.Message
 import com.lastreact.android.chattapp.databinding.MessageItemBinding
 import java.text.SimpleDateFormat
@@ -27,7 +28,7 @@ open class ChatAdapter(query: Query) : FireStoreAdapter<ChatAdapter.ViewHolder>(
             message?.let {
                 val pattern = this.root.context.getString(R.string.date_format)
                 val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
-                val date: String = simpleDateFormat.format(it.timestamp)
+                val date: String = simpleDateFormat.format(it.timestamp!!)
 
                 binding.messageTextView.text = it.text
                 binding.timestampTextView.text = date

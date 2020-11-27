@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.Query
 import com.lastreact.android.chattapp.data.model.Channel
 import com.lastreact.android.chattapp.databinding.ChannelItemBinding
-import com.lastreact.android.chattapp.ui.chat.FireStoreAdapter
+import com.lastreact.android.chattapp.base.FireStoreAdapter
 import java.util.*
 
 open class ChannelAdapter(query: Query, private val listener: (channel: Channel?) -> Unit) :
@@ -28,12 +28,15 @@ open class ChannelAdapter(query: Query, private val listener: (channel: Channel?
             channel?.let {
                 channelNameTextView.text = it.name
                 descriptionTextView.text = it.description
-                val rnd = Random()
-                val color: Int =
-                    Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
-                channelIcon.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN)
+                channelIcon.setColorFilter(getRandomColor(),
+                    android.graphics.PorterDuff.Mode.SRC_IN)
             }
             this.root.setOnClickListener { listener(channel) }
         }
+    }
+
+    private fun getRandomColor(): Int {
+        val rnd = Random()
+        return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
     }
 }

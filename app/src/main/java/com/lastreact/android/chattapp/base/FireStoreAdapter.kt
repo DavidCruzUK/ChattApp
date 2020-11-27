@@ -1,4 +1,4 @@
-package com.lastreact.android.chattapp.ui.chat
+package com.lastreact.android.chattapp.base
 
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
