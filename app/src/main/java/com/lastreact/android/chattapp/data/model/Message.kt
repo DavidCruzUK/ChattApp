@@ -6,7 +6,7 @@ import java.util.*
 
 @IgnoreExtraProperties
 class Message {
-    var userId: String? = null
+    var id: String? = null
     var text: String? = null
     var userName: String? = null
 
@@ -14,8 +14,8 @@ class Message {
     var timestamp: Date? = null
 
     constructor()
-    constructor(userId: String?, text: String?, userName: String?, timestamp: Date?) {
-        this.userId = userId
+    constructor(id: String?, text: String?, userName: String?, timestamp: Date?) {
+        this.id = id
         this.text = text
         this.userName = userName
         this.timestamp = timestamp

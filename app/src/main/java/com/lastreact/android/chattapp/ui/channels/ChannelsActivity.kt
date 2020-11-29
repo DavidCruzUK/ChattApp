@@ -116,16 +116,18 @@ class ChannelsActivity : BaseActivity<ActivityChannelsBinding>(), AnkoLogger {
             }
 
             override fun onDataChanged() {
-                if (itemCount == 0) {
-                    binding.emptyView.visibility = View.VISIBLE
-                    binding.channelsRecyclerView.visibility = View.GONE
-                } else {
-                    binding.emptyView.visibility = View.GONE
-                    binding.channelsRecyclerView.visibility = View.VISIBLE
+                with(binding) {
+                    if (itemCount == 0) {
+                        emptyView.visibility = View.VISIBLE
+                        channelsRecyclerView.visibility = View.GONE
+                    } else {
+                        emptyView.visibility = View.GONE
+                        channelsRecyclerView.visibility = View.VISIBLE
+                    }
+                    channelsRecyclerView.layoutManager =
+                        LinearLayoutManager(this@ChannelsActivity)
+                    channelsRecyclerView.adapter = adapter
                 }
-                binding.channelsRecyclerView.layoutManager =
-                    LinearLayoutManager(this@ChannelsActivity)
-                binding.channelsRecyclerView.adapter = adapter
             }
         }
     }

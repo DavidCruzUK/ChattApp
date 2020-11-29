@@ -88,7 +88,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>(), AnkoLogger {
             .collection(MESSAGE_COLLECTION)
             .document()
         val currentUser = auth.currentUser
-        val message = Message(currentUser?.uid ?: "", text, currentUser?.displayName ?: "", null)
+        val message = Message(currentUser?.uid ?: "", text.trim(), currentUser?.displayName ?: "", null)
         return fireStore.runTransaction { transition ->
             transition[chatReference] = message
             null

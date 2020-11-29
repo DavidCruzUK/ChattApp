@@ -56,8 +56,8 @@ class ChannelDialogFragment : BaseDialogFragment<DialogChannelBinding>(), View.O
     private fun onCreateClicked() {
         val channel = Channel(
             null,
-            binding.channelNameEditText.text.toString(),
-            binding.channelDescriptionEditText.text.toString(),
+            binding.channelNameEditText.text.toString().trim(),
+            binding.channelDescriptionEditText.text.toString().trim(),
         )
         binding.channelNameEditText.text.clear()
         binding.channelDescriptionEditText.text.clear()
