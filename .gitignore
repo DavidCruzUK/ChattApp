@@ -142,3 +142,4 @@ app/google-services.json
 # End of https://www.gitignore.io/api/androidstudio
 *.jar
 .idea/jarRepositories.xml
+.idea/render.experimental.xml
